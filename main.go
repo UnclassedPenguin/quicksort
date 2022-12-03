@@ -23,7 +23,7 @@ import (
 func menu(s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
   var slice [][]int
-  divide := int(x/y)
+  divide := int(x/y)+1
 
   strings := []string{ "Unclassed Penguin Quick Sort",
                        "Press 1 to start from random seed",
@@ -156,7 +156,7 @@ func createOrderedSlice(s tcell.Screen, d int) [][]int {
       }
       slice[i] = append(slice[i], newInt)
     }
-    if i % (d+1) == 0 {
+    if i % (d) == 0 {
       count++
     }
   }
