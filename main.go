@@ -56,7 +56,7 @@ func menu(s tcell.Screen, style tcell.Style) {
           s.Sync()
           lengths = countLengths(slice, s)
           fmt.Println(lengths)
-          quickSort(&lengths, 0, len(lengths)-1)
+          quickSort(lengths, 0, len(lengths)-1)
           fmt.Println(lengths)
         }
       }
@@ -142,7 +142,7 @@ func writeToScreen(s tcell.Screen, style tcell.Style, x int, y int, str string) 
 
 
 // SORTING ALGORITHM
-func quickSort(arr *[]int, start, end int) {
+func quickSort(arr []int, start, end int) {
   if start >= end {
     return
   }
@@ -152,12 +152,12 @@ func quickSort(arr *[]int, start, end int) {
   quickSort(arr, index + 1, end)
 }
 
-func partition(arr *[]int, start, end int) int{
+func partition(arr []int, start, end int) int{
 
   pivotIndex := start
-  pivotValue := (*arr)[end]
+  pivotValue := arr[end]
   for i := start; i < end; i++ {
-    if (*arr)[i] < pivotValue {
+    if arr[i] < pivotValue {
       swap(arr, i, pivotIndex)
       pivotIndex++
     }
@@ -166,10 +166,10 @@ func partition(arr *[]int, start, end int) int{
   return pivotIndex
 }
 
-func swap(arr *[]int, index1, index2 int) {
-  temp := (*arr)[index1]
-  (*arr)[index1] = (*arr)[index2]
-  (*arr)[index2] = temp
+func swap(arr []int, index1, index2 int) {
+  temp := arr[index1]
+  arr[index1] = arr[index2]
+  arr[index2] = temp
 }
 
 // SORTING ALGORITHM END

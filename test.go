@@ -6,7 +6,7 @@ import (
   "math/rand"
 )
 
-func quickSort(arr *[]int, start, end int) {
+func quickSort(arr []int, start, end int) {
   if start >= end {
     return
   }
@@ -16,12 +16,12 @@ func quickSort(arr *[]int, start, end int) {
   quickSort(arr, index + 1, end)
 }
 
-func partition(arr *[]int, start, end int) int{
+func partition(arr []int, start, end int) int{
 
   pivotIndex := start
-  pivotValue := (*arr)[end]
+  pivotValue := arr[end]
   for i := start; i < end; i++ {
-    if (*arr)[i] < pivotValue {
+    if arr[i] < pivotValue {
       swap(arr, i, pivotIndex)
       pivotIndex++
     }
@@ -30,10 +30,10 @@ func partition(arr *[]int, start, end int) int{
   return pivotIndex
 }
 
-func swap(arr *[]int, index1, index2 int) {
-  temp := (*arr)[index1]
-  (*arr)[index1] = (*arr)[index2]
-  (*arr)[index2] = temp
+func swap(arr []int, index1, index2 int) {
+  temp := arr[index1]
+  arr[index1] = arr[index2]
+  arr[index2] = temp
 }
 
 func main() {
@@ -48,7 +48,7 @@ func main() {
 
   fmt.Println("arr:", arr)
 
-  quickSort(&arr, 0, len(arr)-1)
+  quickSort(arr, 0, len(arr)-1)
 
   fmt.Println("sorted:", arr)
 
