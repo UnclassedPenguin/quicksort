@@ -24,6 +24,7 @@ func menu(s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
   var slice [][]int
   divide := int(x/y)+1
+  var sorted bool
 
   strings := []string{ "Unclassed Penguin Quick Sort",
                        "Press 1 to start from random seed",
@@ -54,6 +55,7 @@ func menu(s tcell.Screen, style tcell.Style) {
           os.Exit(0)
         case '1':
           s.Clear()
+          sorted = false
           slice = createRandomSlice(s)
           draw(slice, s, style)
           writeToScreen(s, style, 1, 1, "Press 1 For new random array")
@@ -64,6 +66,7 @@ func menu(s tcell.Screen, style tcell.Style) {
           s.Sync()
         case '2':
           s.Clear()
+          sorted = false
           slice = createOrderedSlice(s, divide)
           draw(slice, s, style)
           writeToScreen(s, style, 1, 1, "Press 1 For new random array")
@@ -75,7 +78,13 @@ func menu(s tcell.Screen, style tcell.Style) {
           s.Sync()
 
         case '3':
-          quickSort(s, style, slice, 0, len(slice)-1)
+          if !sorted {
+            quickSort(s, style, slice, 0, len(slice)-1)
+            sorted = true
+          } else {
+            writeToScreen(s, style, x/2-7, 1, "Already Sorted!")
+            s.Sync()
+          }
         }
       }
     }
