@@ -146,12 +146,13 @@ func partition(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) i
     }
   }
 
+  // THIS IS WHERE I WANT TO UPDATE DRAW
   draw(arr, s, style)
+  writeToScreen(s, style, 1, 1, "Press 1 For new array")
+  writeToScreen(s, style, 1, 2, "Press Q to quit")
+
   s.Sync()
   time.Sleep(time.Millisecond * 100)
-
-  // THIS IS WHERE I WANT TO UPDATE DRAW
-
 
   swap(arr, pivotIndex, end)
   return pivotIndex
