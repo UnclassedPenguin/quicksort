@@ -11,12 +11,11 @@ import (
 func menu(s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
   var slice [][]int
+  divide := int(x/y)
 
   strings := []string{ "Unclassed Penguin Quick Sort",
                        "Press 1 to start from random seed",
-                       "(You can also press 1 at any time",
-                       "while it is running to restart",
-                       "with a new seed.)",
+                       "Press 2 to start from shuffled \"ordered\" seed",
                        "Esc, Ctrl-C, or q to quit",
                      }
 
@@ -53,13 +52,14 @@ func menu(s tcell.Screen, style tcell.Style) {
           s.Sync()
         case '2':
           s.Clear()
-          slice = createOrderedSlice(s)
+          slice = createOrderedSlice(s, divide)
           draw(slice, s, style)
           writeToScreen(s, style, 1, 1, "Press 1 For new random array")
           writeToScreen(s, style, 1, 2, "Press 2 For new \"ordered\" array")
           writeToScreen(s, style, 1, 3, "Press 3 to sort")
           writeToScreen(s, style, 1, 4, fmt.Sprintf("X: %v", x))
           writeToScreen(s, style, 1, 5, fmt.Sprintf("Y: %v", y))
+          writeToScreen(s, style, 1, 6, fmt.Sprintf("d: %v", divide))
           s.Sync()
 
         case '3':
@@ -193,8 +193,9 @@ func partition(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) i
 
   // THIS IS WHERE I WANT TO UPDATE DRAW
   draw(arr, s, style)
-  writeToScreen(s, style, 1, 1, "Press 1 For new array")
-  writeToScreen(s, style, 1, 2, "Press Q to quit")
+  writeToScreen(s, style, 1, 1, "Press 1 For new random array")
+  writeToScreen(s, style, 1, 2, "Press 2 For new \"ordered\" array")
+  writeToScreen(s, style, 1, 3, "Press Q to quit")
 
   s.Sync()
   time.Sleep(time.Millisecond * 100)
