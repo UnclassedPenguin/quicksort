@@ -11,7 +11,6 @@ import (
 func menu(s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
   var slice [][]int
-  var lengths []int
 
   strings := []string{ "Unclassed Penguin Quick Sort",
                        "Press 1 to start from random seed",
@@ -54,33 +53,25 @@ func menu(s tcell.Screen, style tcell.Style) {
         case '2':
           writeToScreen(s, style, x/2, 1, "SORTING...")
           s.Sync()
-          lengths = countLengths(slice, s)
-          fmt.Println(lengths)
-          quickSort(lengths, 0, len(lengths)-1)
-          fmt.Println(lengths)
+          quickSort(s, style, slice, 0, len(slice)-1)
         }
       }
     }
   }
 }
 
-func countLengths(slice [][]int, s tcell.Screen) []int {
-  x, y := s.Size()
+func countLength(slice []int, s tcell.Screen) int {
+  _, y := s.Size()
 
-  var lengths []int
   var count int
 
-  for i := 0; i < x; i++ {
-    count = 0
-    for j := 0; j < y; j++ {
-      if slice[i][j] == 1 {
-        count++
-      }
+  for i := 0; i < y; i++ {
+    if slice[i] == 1 {
+      count++
     }
-    lengths = append(lengths, count)
   }
 
-  return lengths
+  return count
 }
 
 
@@ -134,27 +125,30 @@ func writeToScreen(s tcell.Screen, style tcell.Style, x int, y int, str string) 
 // SORTING ALGORITHM
 //------------------------------------------------------------------------------
 
-func quickSort(arr []int, start, end int) {
+func quickSort(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) {
   if start >= end {
     return
   }
 
-  index := partition(arr, start, end)
-  quickSort(arr, start, index - 1)
-  quickSort(arr, index + 1, end)
+  index := partition(s, style, arr, start, end)
+  quickSort(s, style, arr, start, index - 1)
+  quickSort(s, style, arr, index + 1, end)
 }
 
-func partition(arr []int, start, end int) int{
+func partition(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) int{
 
   pivotIndex := start
   pivotValue := arr[end]
   for i := start; i < end; i++ {
-    if arr[i] < pivotValue {
+    if countLength(arr[i], s) < countLength(pivotValue, s) {
       swap(arr, i, pivotIndex)
       pivotIndex++
     }
   }
 
+  draw(arr, s, style)
+  s.Sync()
+  time.Sleep(time.Millisecond * 100)
 
   // THIS IS WHERE I WANT TO UPDATE DRAW
 
@@ -163,7 +157,7 @@ func partition(arr []int, start, end int) int{
   return pivotIndex
 }
 
-func swap(arr []int, index1, index2 int) {
+func swap(arr [][]int, index1, index2 int) {
   temp := arr[index1]
   arr[index1] = arr[index2]
   arr[index2] = temp
