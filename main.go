@@ -9,6 +9,9 @@ import (
 )
 func menu(s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
+  var slice [][]int
+  var lengths []int
+
   strings := []string{ "Unclassed Penguin Quick Sort",
                        "Press 1 to start from random seed",
                        "(You can also press 1 at any time",
@@ -39,50 +42,46 @@ func menu(s tcell.Screen, style tcell.Style) {
           s.Fini()
           os.Exit(0)
         case '1':
-          slice := createRandomSlice(s)
-          mainLoop(slice, s, style)
+          s.Clear()
+          slice = createRandomSlice(s)
+          draw(slice, s, style)
+          writeToScreen(s, style, 1, 1, "Press 1 For new array")
+          writeToScreen(s, style, 1, 2, "Press 2 to sort")
+          writeToScreen(s, style, 1, 3, fmt.Sprintf("X: %v", x))
+          writeToScreen(s, style, 1, 4, fmt.Sprintf("Y: %v", y))
+          s.Sync()
+        case '2':
+          writeToScreen(s, style, x/2, 1, "SORTING...")
+          s.Sync()
+          lengths = countLengths(slice, s)
+          fmt.Println(lengths)
         }
       }
     }
   }
 }
 
-
-func mainLoop(slice [][]int, s tcell.Screen, style tcell.Style) {
+func countLengths(slice [][]int, s tcell.Screen) []int {
   x, y := s.Size()
 
-  go func() {
-    for {
-      switch ev := s.PollEvent().(type) {
-      case *tcell.EventResize:
-        s.Sync()
-      case *tcell.EventKey:
-        switch ev.Key() {
-        case tcell.KeyCtrlC, tcell.KeyEscape:
-          s.Fini()
-          os.Exit(0)
-        case tcell.KeyRune:
-          switch ev.Rune() {
-          case 'q', 'Q':
-            s.Fini()
-            os.Exit(0)
-          case '1':
-            s.Clear()
-            draw(slice, s, style)
-            writeToScreen(s, style, 1, 1, "Press 1 For new array")
-            writeToScreen(s, style, 1, 2, "Press 2 to sort")
-            writeToScreen(s, style, 1, 3, fmt.Sprintf("X: %v", x))
-            writeToScreen(s, style, 1, 4, fmt.Sprintf("Y: %v", y))
-            s.Sync()
-          case '2':
-            s.Clear()
-            writeToScreen(s, style, 1, x/2, "SORTING...")
-            s.Sync()
-          }
-        }
+  var lengths []int
+  var count int
+
+  for i := 0; i < x; i++ {
+    count = 0
+    for j := 0; j < y; j++ {
+      if slice[i][j] == 1 {
+        count++
       }
     }
-  }()
+    lengths = append(lengths, count)
+  }
+
+  return lengths
+}
+
+func quickSort(slice [][]int, lengths []int, s tcell.Screen) {
+
 }
 
 func draw(slice [][]int, s tcell.Screen, style tcell.Style) {
