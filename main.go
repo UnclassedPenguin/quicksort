@@ -45,14 +45,24 @@ func menu(s tcell.Screen, style tcell.Style) {
           s.Clear()
           slice = createRandomSlice(s)
           draw(slice, s, style)
-          writeToScreen(s, style, 1, 1, "Press 1 For new array")
-          writeToScreen(s, style, 1, 2, "Press 2 to sort")
-          writeToScreen(s, style, 1, 3, fmt.Sprintf("X: %v", x))
-          writeToScreen(s, style, 1, 4, fmt.Sprintf("Y: %v", y))
+          writeToScreen(s, style, 1, 1, "Press 1 For new random array")
+          writeToScreen(s, style, 1, 2, "Press 2 For new \"ordered\" array")
+          writeToScreen(s, style, 1, 3, "Press 3 to sort")
+          writeToScreen(s, style, 1, 4, fmt.Sprintf("X: %v", x))
+          writeToScreen(s, style, 1, 5, fmt.Sprintf("Y: %v", y))
           s.Sync()
         case '2':
-          writeToScreen(s, style, x/2, 1, "SORTING...")
+          s.Clear()
+          slice = createRandomSlice(s)
+          draw(slice, s, style)
+          writeToScreen(s, style, 1, 1, "Press 1 For new random array")
+          writeToScreen(s, style, 1, 2, "Press 2 For new \"ordered\" array")
+          writeToScreen(s, style, 1, 3, "Press 3 to sort")
+          writeToScreen(s, style, 1, 4, fmt.Sprintf("X: %v", x))
+          writeToScreen(s, style, 1, 5, fmt.Sprintf("Y: %v", y))
           s.Sync()
+
+        case '3':
           quickSort(s, style, slice, 0, len(slice)-1)
         }
       }
