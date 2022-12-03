@@ -40,9 +40,10 @@ func main() {
 
   rand.Seed(time.Now().UnixNano())
   var arr []int
+  length := 40
 
-  for i := 0; i < 20; i++ {
-    arr = append(arr, rand.Intn(20))
+  for i := 0; i < length; i++ {
+    arr = append(arr, rand.Intn(length))
   }
 
   fmt.Println("arr:", arr)

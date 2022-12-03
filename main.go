@@ -7,6 +7,7 @@ import (
   "math/rand"
   "github.com/gdamore/tcell/v2"
 )
+
 func menu(s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
   var slice [][]int
@@ -55,6 +56,8 @@ func menu(s tcell.Screen, style tcell.Style) {
           s.Sync()
           lengths = countLengths(slice, s)
           fmt.Println(lengths)
+          quickSort(&lengths, 0, len(lengths)-1)
+          fmt.Println(lengths)
         }
       }
     }
@@ -80,9 +83,6 @@ func countLengths(slice [][]int, s tcell.Screen) []int {
   return lengths
 }
 
-func quickSort(slice [][]int, lengths []int, s tcell.Screen) {
-
-}
 
 func draw(slice [][]int, s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
@@ -130,14 +130,49 @@ func writeToScreen(s tcell.Screen, style tcell.Style, x int, y int, str string) 
   }
 }
 
-func flipCoin(total int, limit int) bool{
-  x := rand.Intn(total)
-  if x <= limit {
-    return true
-  } else {
-    return false
+// can probably remove this?
+//func flipCoin(total int, limit int) bool{
+  //x := rand.Intn(total)
+  //if x <= limit {
+    //return true
+  //} else {
+    //return false
+  //}
+//}
+
+
+// SORTING ALGORITHM
+func quickSort(arr *[]int, start, end int) {
+  if start >= end {
+    return
   }
+
+  index := partition(arr, start, end)
+  quickSort(arr, start, index - 1)
+  quickSort(arr, index + 1, end)
 }
+
+func partition(arr *[]int, start, end int) int{
+
+  pivotIndex := start
+  pivotValue := (*arr)[end]
+  for i := start; i < end; i++ {
+    if (*arr)[i] < pivotValue {
+      swap(arr, i, pivotIndex)
+      pivotIndex++
+    }
+  }
+  swap(arr, pivotIndex, end)
+  return pivotIndex
+}
+
+func swap(arr *[]int, index1, index2 int) {
+  temp := (*arr)[index1]
+  (*arr)[index1] = (*arr)[index2]
+  (*arr)[index2] = temp
+}
+
+// SORTING ALGORITHM END
 
 func main() {
   s, err := tcell.NewScreen()
