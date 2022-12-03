@@ -130,18 +130,10 @@ func writeToScreen(s tcell.Screen, style tcell.Style, x int, y int, str string) 
   }
 }
 
-// can probably remove this?
-//func flipCoin(total int, limit int) bool{
-  //x := rand.Intn(total)
-  //if x <= limit {
-    //return true
-  //} else {
-    //return false
-  //}
-//}
-
-
+//------------------------------------------------------------------------------
 // SORTING ALGORITHM
+//------------------------------------------------------------------------------
+
 func quickSort(arr []int, start, end int) {
   if start >= end {
     return
@@ -162,6 +154,11 @@ func partition(arr []int, start, end int) int{
       pivotIndex++
     }
   }
+
+
+  // THIS IS WHERE I WANT TO UPDATE DRAW
+
+
   swap(arr, pivotIndex, end)
   return pivotIndex
 }
@@ -172,7 +169,10 @@ func swap(arr []int, index1, index2 int) {
   arr[index2] = temp
 }
 
+//------------------------------------------------------------------------------
 // SORTING ALGORITHM END
+//------------------------------------------------------------------------------
+
 
 func main() {
   s, err := tcell.NewScreen()

@@ -26,6 +26,7 @@ func partition(arr []int, start, end int) int{
       pivotIndex++
     }
   }
+  fmt.Println(arr)
   swap(arr, pivotIndex, end)
   return pivotIndex
 }
