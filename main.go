@@ -53,7 +53,7 @@ func menu(s tcell.Screen, style tcell.Style) {
           s.Sync()
         case '2':
           s.Clear()
-          slice = createRandomSlice(s)
+          slice = createOrderedSlice(s)
           draw(slice, s, style)
           writeToScreen(s, style, 1, 1, "Press 1 For new random array")
           writeToScreen(s, style, 1, 2, "Press 2 For new \"ordered\" array")
@@ -122,6 +122,41 @@ func createRandomSlice(s tcell.Screen) [][]int {
     }
   }
   return slice
+}
+
+func createOrderedSlice(s tcell.Screen, d int) [][]int {
+  x, y := s.Size()
+
+  var slice [][]int
+  count := 1
+
+  rand.Seed(time.Now().UnixNano())
+
+  for i := 0; i < x; i++ {
+    var newSlice []int
+    slice = append(slice, newSlice)
+    for j := 0; j < y; j++ {
+      var newInt int
+      if j <= count {
+        newInt = 0
+      } else {
+        newInt = 1
+      }
+      slice[i] = append(slice[i], newInt)
+    }
+    if i % (d+1) == 0 {
+      count++
+    }
+  }
+  shuffle(slice)
+  return slice
+}
+
+func shuffle(slice [][]int) {
+  for i := range slice {
+    j := rand.Intn(i + 1)
+    slice[i], slice[j] = slice[j], slice[i]
+  }
 }
 
 // This is used just to write strings to the screen. Used in the "menu".
