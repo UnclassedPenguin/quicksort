@@ -212,6 +212,8 @@ func partition(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) i
     }
   }
 
+  swap(arr, pivotIndex, end)
+
   // THIS IS WHERE I WANT TO UPDATE DRAW
   draw(arr, s, style)
   writeToScreen(s, style, 1, 1, "Press 1 For new random array")
@@ -221,7 +223,6 @@ func partition(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) i
   s.Sync()
   time.Sleep(time.Millisecond * 100)
 
-  swap(arr, pivotIndex, end)
   return pivotIndex
 }
 
