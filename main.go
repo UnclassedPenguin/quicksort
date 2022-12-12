@@ -20,6 +20,9 @@ import (
   "github.com/gdamore/tcell/v2"
 )
 
+
+// Main starting point. Tells the user how to run the program, and sets up the
+// initial array, after the user has selected.
 func menu(s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
   var slice [][]int
@@ -38,7 +41,7 @@ func menu(s tcell.Screen, style tcell.Style) {
   }
 
   // Keyboard handling. Keys to quit (Esc, Ctrl-c, q)
-  // and the key to start the game (1)
+  // and the key to start the game (1,2,3)
   for {
     switch ev := s.PollEvent().(type) {
     case *tcell.EventResize:
@@ -91,6 +94,9 @@ func menu(s tcell.Screen, style tcell.Style) {
   }
 }
 
+// Returns a count of how many 1's are in any given array.
+// Effectively, gives you the size of each column, so that it
+// can be sorted.
 func countLength(slice []int, s tcell.Screen) int {
   _, y := s.Size()
 
@@ -106,9 +112,12 @@ func countLength(slice []int, s tcell.Screen) int {
 }
 
 
+// Draws an array of arrays to the screen.
 func draw(slice [][]int, s tcell.Screen, style tcell.Style) {
   x, y := s.Size()
+
   s.Clear()
+
   for i := 0; i < x; i++ {
     for j := 0; j < y; j++ {
       if slice[i][j] == 1 {
@@ -116,10 +125,13 @@ func draw(slice [][]int, s tcell.Screen, style tcell.Style) {
       }
     }
   }
-  s.Sync()
 
+  s.Sync()
 }
 
+// Function used to create random slice for the terminal window. 
+// For each column it picks a random number between 0 and the height
+// of the column.
 func createRandomSlice(s tcell.Screen) [][]int {
   x, y := s.Size()
 
@@ -138,20 +150,23 @@ func createRandomSlice(s tcell.Screen) [][]int {
       } else {
         newInt = 1
       }
-
       slice[i] = append(slice[i], newInt)
     }
   }
+
   return slice
 }
 
+// This function creates an "ordered" slice. A slice that increases
+// by a known amount based on terminal width/height.
+// "d" is (x/y)+1 so, (width/height)+1
+// "d" just describes how many columns will have the same height before
+// The height is increased by 1. 
 func createOrderedSlice(s tcell.Screen, d int) [][]int {
   x, y := s.Size()
 
   var slice [][]int
   count := 1
-
-  rand.Seed(time.Now().UnixNano())
 
   for i := 0; i < x; i++ {
     var newSlice []int
@@ -173,11 +188,13 @@ func createOrderedSlice(s tcell.Screen, d int) [][]int {
   return slice
 }
 
+// Shuffles the slice of slices to a random order. 
+// Shuffles the columns.
 func shuffle(slice [][]int) {
-  for i := range slice {
-    j := rand.Intn(i + 1)
+  rand.Seed(time.Now().UnixNano())
+  rand.Shuffle(len(slice), func(i, j int){
     slice[i], slice[j] = slice[j], slice[i]
-  }
+  })
 }
 
 // This is used just to write strings to the screen. Used in the "menu".
@@ -191,6 +208,8 @@ func writeToScreen(s tcell.Screen, style tcell.Style, x int, y int, str string) 
 // SORTING ALGORITHM
 //------------------------------------------------------------------------------
 
+// Starts the recursive quick sorting. Starts over the whole array, then splits
+// it and continues to split until it is done.
 func quickSort(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) {
   if start >= end {
     return
@@ -201,10 +220,20 @@ func quickSort(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) {
   quickSort(s, style, arr, index + 1, end)
 }
 
+// This is where the real sorting happens. It takes the last element(the pivotValue) 
+// of its given chunk, and iterates over the entire array, at each step checking 
+// wether the element is less than the pivotValue. If it is, then it is swapped
+// with the pivotIndex (which starts at the very beginning of the section), and the
+// pivotIndex is increased by 1. after doing this over every element of the section,
+// the final step is to swap the last element(The pivotValue) with whatever element
+// is in the pivotIndex. After this, all elements to the left are lower than the
+// pivotIndex, and all elements to the right of the pivot index are higher than the 
+// pivotIndex, although are still completely unsorted, so this is where it 
+// recursively calls itself and sorts the divided sections again.
 func partition(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) int{
-
   pivotIndex := start
   pivotValue := arr[end]
+
   for i := start; i < end; i++ {
     if countLength(arr[i], s) < countLength(pivotValue, s) {
       swap(arr, i, pivotIndex)
@@ -214,7 +243,6 @@ func partition(s tcell.Screen, style tcell.Style, arr [][]int, start, end int) i
 
   swap(arr, pivotIndex, end)
 
-  // THIS IS WHERE I WANT TO UPDATE DRAW
   draw(arr, s, style)
   writeToScreen(s, style, 1, 1, "Press 1 For new random array")
   writeToScreen(s, style, 1, 2, "Press 2 For new \"ordered\" array")
@@ -237,6 +265,7 @@ func swap(arr [][]int, index1, index2 int) {
 //------------------------------------------------------------------------------
 
 
+// Main function. Initializes screen and passes to the "menu" func. 
 func main() {
   s, err := tcell.NewScreen()
   if err != nil {
